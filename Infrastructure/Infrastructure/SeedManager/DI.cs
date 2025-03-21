@@ -1,6 +1,7 @@
 ﻿using Infrastructure.DataAccessManager.EFCore.Contexts;
 using Infrastructure.SeedManager.Demos;
 using Infrastructure.SeedManager.Systems;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -157,6 +158,43 @@ public static class DI
 
         }
         return host;
+    }
+
+    //>>> Reset Data
+    public static void ClearDatabase(this IHost host)
+    {
+        using var scope = host.Services.CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        var context = serviceProvider.GetRequiredService<DataContext>();
+
+        var allTables = context.Model.GetEntityTypes()
+            .Select(t => t.GetTableName())
+            .Where(t => t != null && !t.StartsWith("AspNet"))
+            .ToList();
+
+        using var transaction = context.Database.BeginTransaction();
+        try
+        {
+            // Désactiver temporairement les contraintes de clés étrangères
+            context.Database.ExecuteSqlRaw("EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+
+            foreach (var table in allTables)
+            {
+                var sql = $"DELETE FROM [{table}];";
+                context.Database.ExecuteSqlRaw(sql);
+            }
+
+            // Réactiver les contraintes
+            context.Database.ExecuteSqlRaw("EXEC sp_MSForEachTable 'ALTER TABLE ? CHECK CONSTRAINT ALL'");
+
+            context.SaveChanges();
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 }
 
