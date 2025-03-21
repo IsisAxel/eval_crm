@@ -71,5 +71,36 @@ public class CommandRepository<T> : ICommandRepository<T> where T : BaseEntity
         return query;
     }
 
+    public async Task ClearDatabase(CancellationToken cancellationToken = default)
+    {
 
+        var allTables = _context.Model.GetEntityTypes()
+            .Select(t => t.GetTableName())
+            .Where(t => t != null && !t.StartsWith("AspNet"))
+            .ToList();
+
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            // Désactiver temporairement les contraintes de clés étrangères
+            _context.Database.ExecuteSqlRaw("EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'");
+
+            foreach (var table in allTables)
+            {
+                var sql = $"DELETE FROM [{table}];";
+                _context.Database.ExecuteSqlRaw(sql);
+            }
+
+            // Réactiver les contraintes
+            _context.Database.ExecuteSqlRaw("EXEC sp_MSForEachTable 'ALTER TABLE ? CHECK CONSTRAINT ALL'");
+
+            await _context.SaveChangesAsync(cancellationToken);
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+    }
 }

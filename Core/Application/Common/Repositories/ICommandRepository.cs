@@ -20,5 +20,6 @@ public interface ICommandRepository<T> where T : BaseEntity
     T? Get(string id);
 
     IQueryable<T> GetQuery();
+    Task ClearDatabase(CancellationToken cancellationToken = default);
 }
 
