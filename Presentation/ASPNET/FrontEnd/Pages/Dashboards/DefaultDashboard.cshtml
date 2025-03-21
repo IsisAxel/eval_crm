@@ -1,0 +1,218 @@
+﻿@page
+@{
+    ViewData["Title"] = "Default Dashboard";
+}
+
+<div id="app" v-cloak>
+    <div class="form-card" id="formcard">
+
+
+
+        <div class="container-fluid pt-3 px-3">
+            <div class="row g-3 mb-1 align-items-stretch">
+                <div class="col-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                <div class="bg-holder bg-card">
+                                </div>
+                                <div class="card-body position-relative d-flex flex-column justify-content-center text-center">
+                                    <h6>Campaign</h6>
+                                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" ref="campaignTotalAmountRef" align="center"></div>
+                                    <a class="fw-semi-bold fs-10 text-nowrap" href="/Campaigns/CampaignList">See all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                <div class="bg-holder bg-card">
+                                </div>
+                                <div class="card-body position-relative d-flex flex-column justify-content-center text-center">
+                                    <h6>Lead</h6>
+                                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" ref="leadTotalAmountRef" align="center"></div>
+                                    <a class="fw-semi-bold fs-10 text-nowrap" href="/Leads/LeadList">See all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-0 g-3">
+                        <div class="col-6">
+                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                <div class="bg-holder bg-card">
+                                </div>
+                                <div class="card-body position-relative d-flex flex-column justify-content-center text-center">
+                                    <h6>Budget</h6>
+                                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" ref="budgetTotalAmountRef" align="center"></div>
+                                    <a class="fw-semi-bold fs-10 text-nowrap" href="/Budgets/BudgetList">See all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                <div class="bg-holder bg-card">
+                                </div>
+                                <div class="card-body position-relative d-flex flex-column justify-content-center text-center">
+                                    <h6>Expense</h6>
+                                    <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" ref="expenseTotalAmountRef" align="center"></div>
+                                    <a class="fw-semi-bold fs-10 text-nowrap" href="/Expenses/ExpenseList">See all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card h-100 overflow-hidden d-flex flex-column" style="min-width: 12rem">
+                        <div class="bg-holder bg-card">
+                        </div>
+                        <div class="card-body position-relative d-flex flex-column justify-content-center text-center">
+                            <h6>Closed Won</h6>
+                            <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" ref="closedTotalAmountRef" align="center"></div>
+                            <a class="fw-semi-bold fs-10 text-nowrap" href="/Leads/LeadList">See all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                            <p>Lead overview</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid pt-3 px-3">
+            <div class="row g-2">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Lead Pipeline</h6>
+                            <a href="/Leads/LeadList">Leads</a>
+                        </div>
+                        <div ref="leadPipelineFunnelRef" align="center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Lead Closing</h6>
+                            <a href="/Leads/LeadList">Leads</a>
+                        </div>
+                        <div ref="salesTeamLeadClosingRef" align="center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid pt-3 px-3">
+            <div class="row g-2">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Campaign By Status</h6>
+                            <a href="/Campaigns/CampaignList">Campaigns</a>
+                        </div>
+                        <div ref="campaignByStatusRef" align="center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Lead Activity By Type</h6>
+                            <a href="/LeadActivities/LeadActivityList">Lead Activities</a>
+                        </div>
+                        <div ref="leadActivityByTypeRef" align="center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-6">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-chart-line fa-3x" style="color: #E94649;"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Sales</p>
+                            <h6 class="mb-0 text-end"><span ref="cardSalesQtyRef"></span> Qty.</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                    <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Purchase</p>
+                            <h6 class="mb-0 text-end"><span ref="cardPurchaseQtyRef"></span> Qty.</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Customer Group</h6>
+                            <a href="/SalesReports/SalesReportList">Sales</a>
+                        </div>
+                        <div ref="customerGroupChartRef" align="center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Vendor Group</h6>
+                            <a href="/PurchaseReports/PurchaseReportList">Purchases</a>
+                        </div>
+                        <div ref="vendorGroupChartRef" align="center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Customer Category</h6>
+                            <a href="/SalesReports/SalesReportList">Sales</a>
+                        </div>
+                        <div ref="customerCategoryChartRef" align="center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Vendor Category</h6>
+                            <a href="/PurchaseReports/PurchaseReportList">Purchases</a>
+                        </div>
+                        <div ref="vendorCategoryChartRef" align="center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Latest Sales</h6>
+                            <a href="/SalesOrders/SalesOrderList">Sales</a>
+                        </div>
+                        <div ref="salesOrderGridRef" align="center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-white text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Latest Purchase</h6>
+                            <a href="/PurchaseOrders/PurchaseOrderList">Purchases</a>
+                        </div>
+                        <div ref="purchaseOrderGridRef" align="center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/FrontEnd/Pages/Dashboards/DefaultDashboard.cshtml.js"></script>
+}
