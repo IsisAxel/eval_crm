@@ -19,7 +19,7 @@ public class DataController : BaseApiController
 
     [Authorize]
     [HttpGet("ResetData")]
-    public async Task<ActionResult<ApiSuccessResult<object>>> GetCRMDashboardAsync(
+    public async Task<ActionResult<ApiSuccessResult<object>>> ResetData(
         CancellationToken cancellationToken
         )
     {
@@ -29,7 +29,7 @@ public class DataController : BaseApiController
         return Ok(new ApiSuccessResult<object>
         {
             Code = StatusCodes.Status200OK,
-            Message = $"Success executing {nameof(GetCRMDashboardAsync)}",
+            Message = $"Success executing {nameof(ResetData)}",
             Content = null
         });
     }

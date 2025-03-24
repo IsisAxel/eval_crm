@@ -17,6 +17,7 @@ public static class DI
         services.AddScoped<RoleSeeder>();
         services.AddScoped<UserAdminSeeder>();
         services.AddScoped<CompanySeeder>();
+        services.AddScoped<BudgetAlertRateSeeder>();
 
         return services;
     }
@@ -38,6 +39,9 @@ public static class DI
 
             var companySeeder = serviceProvider.GetRequiredService<CompanySeeder>();
             companySeeder.GenerateDataAsync().Wait();
+
+            var budgetAlertRateSeeder = serviceProvider.GetRequiredService<BudgetAlertRateSeeder>();
+            budgetAlertRateSeeder.GenerateDataAsync().Wait();
 
         }
 

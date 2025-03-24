@@ -4,6 +4,8 @@ using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
 using MediatR;
+using Application.Features.BudgetAlertRateManager.Queries;
+using Application.Features.CampaignManager.Queries;
 
 namespace Application.Features.ExpenseManager.Commands;
 
@@ -45,14 +47,14 @@ public class CreateExpenseHandler : IRequestHandler<CreateExpenseRequest, Create
         ICommandRepository<Expense> repository,
         IUnitOfWork unitOfWork,
         NumberSequenceService numberSequenceService
-    )
+        )
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
         _numberSequenceService = numberSequenceService;
     }
 
-    public async Task<CreateExpenseResult> Handle(CreateExpenseRequest request, CancellationToken cancellationToken = default)
+    public async Task<CreateExpenseResult> Handle(CreateExpenseRequest request, CancellationToken cancellationToken)
     {
         var entity = new Expense
         {

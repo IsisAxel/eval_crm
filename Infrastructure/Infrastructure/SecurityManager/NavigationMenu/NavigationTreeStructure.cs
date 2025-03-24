@@ -252,6 +252,23 @@ public static class NavigationTreeStructure
                     "IsModule": false
                 }
             ]
+        },
+        {
+            "URL": "#",
+            "Name": "Data",
+            "IsModule": true,
+            "Children": [
+                {
+                    "URL": "/Data/ResetData",
+                    "Name": "Reset Data",
+                    "IsModule": false
+                },
+                {
+                    "URL": "/Data/ImportData",
+                    "Name": "Import Data",
+                    "IsModule": false
+                }
+            ]
         }
     ]
     """;
