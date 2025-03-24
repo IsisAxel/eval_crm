@@ -59,5 +59,16 @@ const App = {
     }
 };
 
+Vue.onMounted(async() => {   
+    try {
+        await SecurityManager.authorizePage(['Data']);
+        await SecurityManager.validateToken();
+    } catch (error) {
+        console.log(error);
+    } finally {
+        hideSpinnerAndShowContent();
+    }
+});
+
 Vue.createApp(App).mount('#app');
 

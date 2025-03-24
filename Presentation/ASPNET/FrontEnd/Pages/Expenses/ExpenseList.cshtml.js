@@ -303,6 +303,14 @@
                     throw error;
                 }
             },
+            getExpenseBudgetAlertCheck: async (amount , campaignId , expenseDate) => {
+                try {
+                    const response = await AxiosManager.post('/BudgetAlertRate/CheckBudgetAlertRate', {amount , campaignId , expenseDate});
+                    return response;
+                } catch (error) {
+                    throw error;
+                }
+            },
         };
 
         const methods = {
@@ -342,26 +350,59 @@
                         return;
                     }
 
+                    if (!state.deleteMode) 
+                    {
+                        const response = await services.getExpenseBudgetAlertCheck(state.amount, state.campaignId, state.expenseDate);
+                        console.log(response);
+                        if (response.data.code === 200 && response.data.content.data !== '') {
+                            const result = await Swal.fire({
+                                icon: 'warning',
+                                title: 'Budget Alert',
+                                text: response.data.content.data,
+                                confirmButtonText: 'Confirm',
+                                showConfirmButton: true,
+                                showCancelButton: true,
+                                cancelButtonText: 'Cancel'
+                            });
+                            if (!result.isConfirmed) {
+                                state.isSubmitting = false;
+                                return;
+                            }
+                        }   
+                    }
+
                     const response = state.id === ''
                         ? await services.createMainData(state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId())
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
                             : await services.updateMainData(state.id, state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId());
 
-                    if (response.data.code === 200) {
-                        await methods.populateMainData();
-                        mainGrid.refresh();
-                        Swal.fire({
-                            icon: 'success',
-                            title: state.deleteMode ? 'Delete Successful' : 'Save Successful',
-                            text: 'Form will be closed...',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        setTimeout(() => {
-                            mainModal.obj.hide();
-                        }, 2000);
-                    } else {
+                        if (response.data.code === 200) {
+                            await methods.populateMainData();
+                            mainGrid.refresh();
+                        
+                            const swalConfig = {
+                                icon: 'success',
+                                title: state.deleteMode ? 'Delete Successful' : 'Save Successful',
+                                text: 'Form will be closed...',
+                                timer: 2000,
+                                showConfirmButton: false
+                            };
+                        
+                            // if (!state.deleteMode && response.data.content.isAlert) {
+                            //     swalConfig.icon = 'warning';
+                            //     swalConfig.title += ' - Budget Alert!';
+                            //     swalConfig.html = `⚠️ ${response.data.content.alertMessage}<br><br>
+                            //                         <small style="opacity:0.7">Form will be closed...</small>`;
+                            //     swalConfig.timer = 5000;
+                            // }
+                        
+                            Swal.fire(swalConfig);
+                        
+                            setTimeout(() => {
+                                mainModal.obj.hide();
+                            }, state.deleteMode ? 2000 : 3500)
+                        } else {
                         Swal.fire({
                             icon: 'error',
                             title: state.deleteMode ? 'Delete Failed' : 'Save Failed',

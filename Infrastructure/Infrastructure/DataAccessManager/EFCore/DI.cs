@@ -79,6 +79,7 @@ public static class DI
 
         // Create database using DataContext
         var dataContext = serviceProvider.GetRequiredService<DataContext>();
+        dataContext.Database.EnsureDeleted() ; // Ensure database is deleted (development only)
         dataContext.Database.EnsureCreated(); // Ensure database is created (development only)
 
         return host;

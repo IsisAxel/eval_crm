@@ -1,4 +1,6 @@
 ﻿using Application.Common.Repositories;
+using Application.Features.BudgetAlertRateManager.Queries;
+using Application.Features.CampaignManager.Queries;
 using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
@@ -68,7 +70,7 @@ public class UpdateExpenseHandler : IRequestHandler<UpdateExpenseRequest, Update
         entity.CampaignId = request.CampaignId;
 
         _repository.Update(entity);
-        await _unitOfWork.SaveAsync(cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);  
 
         return new UpdateExpenseResult
         {
