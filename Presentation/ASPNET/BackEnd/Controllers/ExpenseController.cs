@@ -131,7 +131,23 @@ public class ExpenseController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetExpenseAmountListByCampaign")]
+    public async Task<ActionResult<ApiSuccessResult<GetExpenseAmountListByCampaignResult>>> GetExpenseAmountListByCampaignAsync(
+    CancellationToken cancellationToken,
+    [FromQuery] bool isDeleted
+    )
+    {
+        var request = new GetExpenseAmountListByCampaignRequest { IsDeleted = isDeleted };
+        var response = await _sender.Send(request, cancellationToken);
 
+        return Ok(new ApiSuccessResult<GetExpenseAmountListByCampaignResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetExpenseAmountListByCampaignAsync)}",
+            Content = response
+        });
+    }
 }
 
 

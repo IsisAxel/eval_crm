@@ -75,6 +75,23 @@ public class CampaignController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetCampaignRevenueSummary")]
+    public async Task<ActionResult<ApiSuccessResult<GetCampaignRevenueSummaryRequest>>> GetCampaignRevenueSummary(
+        CancellationToken cancellationToken,
+        [FromQuery] bool isDeleted = false
+        )
+    {
+        var request = new GetCampaignRevenueSummaryRequest { IsDeleted = isDeleted };
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetCampaignRevenueSummaryResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetCampaignListAsync)}",
+            Content = response
+        });
+    }
 
     [Authorize]
     [HttpGet("GetCampaignStatusList")]
