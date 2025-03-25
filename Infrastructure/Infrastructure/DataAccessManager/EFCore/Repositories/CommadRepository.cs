@@ -22,6 +22,24 @@ public class CommandRepository<T> : ICommandRepository<T> where T : BaseEntity
         await _context.AddAsync(entity, cancellationToken);
     }
 
+    public async Task CreateListAsync(List<T> entities, CancellationToken cancellationToken = default)
+    {
+        if (entities == null || entities.Count == 0) return;
+
+        var now = DateTime.UtcNow;
+        foreach (var entity in entities)
+        {
+            entity.CreatedAtUtc = now;
+        }
+
+        // _context.ChangeTracker.AutoDetectChangesEnabled = false;
+
+        await _context.AddRangeAsync(entities, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        // _context.ChangeTracker.AutoDetectChangesEnabled = true;
+    }
+
     public void Create(T entity)
     {
         entity.CreatedAtUtc = DateTime.UtcNow;
@@ -40,6 +58,18 @@ public class CommandRepository<T> : ICommandRepository<T> where T : BaseEntity
         entity.UpdatedAtUtc = DateTime.UtcNow;
         _context.Update(entity);
     }
+
+    public async Task DeleteListAsync(List<T> entities, CancellationToken cancellationToken = default)
+    {
+        if (entities == null || entities.Count == 0) return;
+
+        // On marque les entités à supprimer
+        _context.RemoveRange(entities);
+
+        // On applique la suppression dans la base de données
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
 
     public void Purge(T entity)
     {

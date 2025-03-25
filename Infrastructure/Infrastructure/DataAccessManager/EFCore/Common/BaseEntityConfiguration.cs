@@ -13,7 +13,8 @@ public abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T> w
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
             .HasMaxLength(IdConsts.MaxLength)
-            .IsRequired(true);
+            .IsRequired(true)
+            .ValueGeneratedOnAdd();
         builder.Property(e => e.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired(true);
