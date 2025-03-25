@@ -93,6 +93,23 @@ public class BudgetController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetBudgetByCampaign")]
+    public async Task<ActionResult<ApiSuccessResult<GetBudgetByCampaignResult>>> GetBudgetByCampaign(
+        CancellationToken cancellationToken
+        )
+    {
+        var request = new GetBudgetByCampaignRequest { };
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetBudgetByCampaignResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetBudgetByCampaign)}",
+            Content = response
+        });
+    }
+
 
     [Authorize]
     [HttpGet("GetBudgetSingle")]
