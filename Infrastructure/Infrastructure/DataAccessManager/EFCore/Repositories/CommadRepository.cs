@@ -106,7 +106,7 @@ public class CommandRepository<T> : ICommandRepository<T> where T : BaseEntity
 
         var allTables = _context.Model.GetEntityTypes()
             .Select(t => t.GetTableName())
-            .Where(t => t != null && !t.StartsWith("AspNet"))
+            .Where(t => t != null && !t.StartsWith("AspNet") && !t.StartsWith("Token") && !t.StartsWith("SalesTeam"))
             .ToList();
 
         using var transaction = _context.Database.BeginTransaction();

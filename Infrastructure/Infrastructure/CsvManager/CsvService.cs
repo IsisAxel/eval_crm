@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using Application.Common.CQS.Queries;
 using Application.Common.Repositories;
 using Application.Common.Services.EmailManager;
 using Application.Features.NumberSequenceManager;
@@ -14,12 +15,14 @@ namespace Infrastructure.CsvManager
         private readonly ICommandRepository<Campaign> _contextCampaign;
         private readonly ICommandRepository<Budget> _contextBudget;
         private readonly ICommandRepository<Expense> _contextExpense;
+        private readonly IQueryContext _contextSalesTeam;
         private readonly NumberSequenceService _numberSequenceService;
 
-        public CsvService(ICommandRepository<Campaign> contextCampaign , ICommandRepository<Budget> contextBudget, ICommandRepository<Expense> contextExpense , NumberSequenceService numberSequenceService){
+        public CsvService(ICommandRepository<Campaign> contextCampaign , ICommandRepository<Budget> contextBudget, IQueryContext contextSalesTeam, ICommandRepository<Expense> contextExpense , NumberSequenceService numberSequenceService){
             _contextCampaign = contextCampaign;
             _contextBudget = contextBudget;
             _contextExpense = contextExpense;
+            _contextSalesTeam = contextSalesTeam;
             _numberSequenceService = numberSequenceService;
         }
         public List<Dictionary<string, object>> CsvToObject(string filePath)
@@ -64,13 +67,14 @@ namespace Infrastructure.CsvManager
                 {
                     return null;
                 }
-
+                SalesTeam st = _contextSalesTeam.SalesTeam.First();
                 foreach (var item in csvObject)
                 {
                     entities.Add(new Campaign{
                         Number = item["campaign_code"].ToString(),
                         Title = item["campaign_title"].ToString(),
                         CreatedById = userId,
+                        SalesTeamId = st.Id,
                         Status = Domain.Enums.CampaignStatus.Confirmed,
                         TargetRevenueAmount = 100000,
                         CampaignDateStart = new DateTime(1990, 1, 1),
@@ -146,9 +150,9 @@ namespace Infrastructure.CsvManager
                         hasErrors = true;
                     }
 
-                    if (lineErrors.Length > 0) // Si des erreurs existent pour cette ligne
+                    if (lineErrors.Length > 0)
                     {
-                        errorMessages.AppendLine($"Erreur à la ligne {i + 1}: {lineErrors.ToString().Trim()}\n");
+                        errorMessages.AppendLine($"Error at line {i + 1}: {lineErrors.ToString().Trim()}\n");
                     }
 
                     string type = item["Type"].ToString();
@@ -183,9 +187,9 @@ namespace Infrastructure.CsvManager
                     }
                     else
                     {
-                        errorMessages.AppendLine($"Erreur à la ligne {i + 1}: Unknown type.\n");
+                        errorMessages.AppendLine($"Error at line {i + 1}: Unknown type.\n");
                         hasErrors = true;
-                        break; // Si le type est inconnu, on arrête l'import
+                        break;
                     }
                 }
 
@@ -195,7 +199,6 @@ namespace Infrastructure.CsvManager
                     return errorMessages.ToString();
                 }
 
-                // Si aucune erreur, insérer les données
                 await _contextBudget.CreateListAsync(budgets, cancellationToken);
                 await _contextExpense.CreateListAsync(expenses, cancellationToken);
 
@@ -203,7 +206,6 @@ namespace Infrastructure.CsvManager
             }
             catch (Exception ex)
             {
-                // Si une exception se produit, retourner un message d'erreur générique
                 return $"Une erreur est survenue : {ex.Message}";
             }
         }

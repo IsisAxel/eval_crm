@@ -481,6 +481,41 @@
                     state.isSubmitting = false;
                 }
             },
+            handleExport: async (campaignId) => {
+                const result = await Swal.fire({
+                    icon: 'question',
+                    title: 'Télécharger la campagne ?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Télécharger',
+                    cancelButtonText: 'Annuler'
+                });
+            
+                if (result.isConfirmed) {
+                    try {
+                        const response = await AxiosManager.get(
+                            `/Campaign/GetCampaignToDuplicate?id=${campaignId}`,
+                            { responseType: 'blob' } // Important pour les fichiers
+                        );
+            
+                        // Création d'un objet Blob
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'campaign_duplicate.json');
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(url);
+            
+                    } catch (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur de téléchargement',
+                            text: error.response?.data?.message || 'Fichier indisponible'
+                        });
+                    }
+                }
+            }
         };
 
 
@@ -559,7 +594,13 @@
                         },
                         { field: 'statusName', headerText: 'Status', width: 150, minWidth: 150 },
                         { field: 'salesTeamName', headerText: 'Sales Team', width: 200, minWidth: 200 },
-                        { field: 'createdAtUtc', headerText: 'Created At UTC', width: 150, format: 'yyyy-MM-dd HH:mm' }
+                        { field: 'createdAtUtc', headerText: 'Created At UTC', width: 150, format: 'yyyy-MM-dd HH:mm' },
+                        { 
+                            headerText: 'Export', 
+                            template: '<button class="export-btn" data-id="${id}">Export</button>', 
+                            width: 120 
+                        }
+                        // { field: 'Duplicate', headerText: 'Duplicate', width: 150, value: "<button>Duplicate</button>" }
                     ],
                     toolbar: [
                         'ExcelExport', 'Search',
@@ -573,6 +614,14 @@
                     dataBound: function () {
                         mainGrid.obj.toolbarModule.enableItems(['EditCustom', 'DeleteCustom'], false);
                         mainGrid.obj.autoFitColumns(['number', 'title', 'campaignDateStart', 'campaignDateFinish', 'targetRevenueAmount', 'statusName', 'salesTeamName', 'createdAtUtc']);
+                        const gridElement = mainGridRef.value;
+                        gridElement.addEventListener('click', (event) => {
+                            const button = event.target.closest('.export-btn');
+                            if (button) {
+                                const campaignId = button.dataset.id;
+                                handler.handleExport(campaignId);
+                            }
+                        });
                     },
                     excelExportComplete: () => { },
                     rowSelected: () => {

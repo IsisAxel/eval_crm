@@ -37,9 +37,9 @@ public static class DI
             
             if (isAlert)
             {
-                alertMessage = $"Budget Alert : expenses ({totalExpenses}) " +
+                alertMessage = $"Total expenses '{totalExpenses}' " +
                             $"are more than {alertRate.Rate}% " +
-                            $"of the budget ({campaignBudget} ) of the campaign ({campaign.Description}).";
+                            $"of the budget ' {campaignBudget} ' of the Campaign '{campaign.Title}'.";
             }
         }
         return alertMessage;
