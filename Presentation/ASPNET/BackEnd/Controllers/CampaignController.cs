@@ -1,7 +1,10 @@
-﻿using Application.Features.CampaignManager.Commands;
+﻿using System.Text;
+using System.Text.Json;
+using Application.Features.CampaignManager.Commands;
 using Application.Features.CampaignManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -129,7 +132,41 @@ public class CampaignController : BaseApiController
         });
     }
 
+    [Authorize]
+    [HttpGet("GetCampaignToDuplicate")]
+    public async Task<IActionResult> GetCampaignToDuplicateAsync(
+        CancellationToken cancellationToken,
+        [FromQuery] string id)
+    {
+        var request = new GetCampaignToDuplicateRequest { Id = id };
+        GetCampaignToDuplicateResult response = await _sender.Send(request, cancellationToken);
 
+        // Sérialisation en mémoire
+        var json = JsonSerializer.Serialize(response.Data);
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var stream = new MemoryStream(bytes);
+
+        // Retourne le fichier directement
+        return File(stream, "application/json", "campaign_duplicate.json");
+    }
+
+    [Authorize]
+    [HttpPost("SendFileName")]
+    public async Task<ActionResult<ApiSuccessResult<string>>> SendFileName( GetCampaignFileNameRequest request,
+    CancellationToken cancellationToken
+    )
+    {
+        // var request = new GetCampaignFileNameRequest { FileName = fileName };
+        GetCampaignFileNameResult response = await _sender.Send(request, cancellationToken);
+
+
+        return Ok(new ApiSuccessResult<string>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(SendFileName)}",
+            Content = response.Data
+        });
+    }
 
 }
 

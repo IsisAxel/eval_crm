@@ -42,8 +42,8 @@ const App = {
                     if (response.data.content == null) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Files uploaded successfully',
-                            text: 'Processing files...',
+                            title: 'Csv imported successfully',
+                            text: 'Waiting....',
                             timer: 2000,
                             showConfirmButton: false
                         });
